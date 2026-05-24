@@ -1,30 +1,31 @@
-import { Dumbbell } from "lucide-react";
+import { Link } from "wouter";
 
 export function Footer() {
   return (
-    <footer className="bg-card border-t border-border py-12 md:py-16 mt-20">
-      <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
-        <div className="flex flex-col items-center md:items-start gap-2">
-          <div className="flex items-center gap-2">
-            <Dumbbell className="h-6 w-6 text-primary" />
-            <span className="font-display font-bold text-2xl tracking-wider uppercase text-foreground">
-              Gym<span className="text-primary">Drop</span>
+    <footer className="bg-[#0a0a0a] border-t border-white/[0.02] py-12">
+      <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+        <div className="flex flex-col items-center md:items-start gap-1">
+          <Link href="/" className="flex items-center gap-2">
+            <span className="font-display font-bold text-xl tracking-widest uppercase text-white">
+              Gym<span className="text-[#dc2626]">Drop</span>
             </span>
-          </div>
-          <p className="text-muted-foreground text-sm max-w-xs text-center md:text-left">
-            Raw, powerful, and focused. The elite destination for serious lifters and athletes.
+          </Link>
+          <p className="text-white/40 text-sm font-sans">
+            Fitness gear. Discovered weekly.
           </p>
         </div>
         
-        <div className="flex gap-8 font-display uppercase tracking-widest text-sm font-semibold">
-          <a href="#trending" className="text-muted-foreground hover:text-primary transition-colors">Gear</a>
-          <a href="#gadgets" className="text-muted-foreground hover:text-primary transition-colors">Gadgets</a>
-          <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Terms</a>
-          <a href="#" className="text-muted-foreground hover:text-primary transition-colors">Privacy</a>
+        <div className="flex gap-6 font-display uppercase tracking-[0.1em] text-xs text-white/50">
+          <a href="#finds" className="hover:text-white transition-colors">Finds</a>
+          <a href="#gadgets" className="hover:text-white transition-colors">Gadgets</a>
+          <a href="#gear" className="hover:text-white transition-colors">Gear</a>
+          <a href="#rankings" className="hover:text-white transition-colors">Rankings</a>
+          <a href="#" className="hover:text-white transition-colors">About</a>
         </div>
-      </div>
-      <div className="mt-12 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} GymDrop. All rights reserved.
+
+        <div className="text-xs text-white/30 font-sans">
+          © {new Date().getFullYear()} GymDrop. Affiliate links may earn us a commission.
+        </div>
       </div>
     </footer>
   );
