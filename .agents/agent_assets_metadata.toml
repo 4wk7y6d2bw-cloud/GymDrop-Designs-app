@@ -1,5 +1,4 @@
 uploads = []
-outputs = []
 
 [[generated]]
 id = "_7ZCdVGjXfuIuXhsiEijs"
@@ -24,3 +23,9 @@ id = "ccXJ_FqNWG-eec8v-csJh"
 uri = "file://artifacts/gymdrop/public/jump-rope.png"
 type = "image"
 title = "Smart jump rope dark"
+
+[[outputs]]
+id = "v1uemH2xm6due6_Jpx3eH"
+uri = "file://gymdrop-site.tar.gz"
+type = "unspecified"
+title = "GymDrop — pliki strony (tar.gz)"
