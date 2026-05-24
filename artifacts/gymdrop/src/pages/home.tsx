@@ -6,6 +6,18 @@ import { ArrowRight } from "lucide-react";
 
 export default function Home() {
   const trendingGear = [
+
+    {
+      name: "Magnetic Gym Bottle",
+      price: "$39.99",
+      badge: "Viral",
+      rating: "4.9",
+      reviews: "5.1k",
+      image: "/bottle.png",
+      description: "The magnetic bottle every GymTok creator uses",
+      category: "ACCESSORIES"
+    },
+    
     { name: "Lifting Belt Pro X", price: "$89.99", badge: "Best Seller", rating: "4.9", reviews: "2.4k", image: "/lifting-belt.png", description: "The belt serious powerlifters swear by", category: "LIFTING GEAR" },
     { name: "Adjustable Dumbbells 50lb", price: "$249.99", badge: "Hot", rating: "4.8", reviews: "1.8k", image: "/dumbbells.png", description: "Space-saving. Heavy-duty. Worth every cent.", category: "WEIGHTS" },
     { name: "Resistance Band Kit", price: "$34.99", badge: "Top Rated", rating: "4.7", reviews: "3.1k", description: "Versatile training in one kit", category: "ACCESSORIES" },
