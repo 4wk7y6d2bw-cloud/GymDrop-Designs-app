@@ -1,0 +1,26 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "_7ZCdVGjXfuIuXhsiEijs"
+uri = "file://artifacts/gymdrop/public/hero-bg.png"
+type = "image"
+title = "Hero dark gym background"
+
+[[generated]]
+id = "I3rNrLfmDwe-jXxlVwIEJ"
+uri = "file://artifacts/gymdrop/public/lifting-belt.png"
+type = "image"
+title = "Lifting belt dark lighting"
+
+[[generated]]
+id = "PN9BwEU7JigfSKE2AYNTE"
+uri = "file://artifacts/gymdrop/public/dumbbells.png"
+type = "image"
+title = "Adjustable dumbbells dark"
+
+[[generated]]
+id = "ccXJ_FqNWG-eec8v-csJh"
+uri = "file://artifacts/gymdrop/public/jump-rope.png"
+type = "image"
+title = "Smart jump rope dark"
