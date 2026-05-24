@@ -5,14 +5,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "wouter";
 import {
-  useLogin,
-  useLogout,
-  useGetAuthStatus,
   useAdminGetProducts,
   useAdminCreateProduct,
   useAdminUpdateProduct,
   useAdminDeleteProduct,
-  getGetAuthStatusQueryKey,
   getAdminGetProductsQueryKey,
   getGetProductsQueryKey,
 } from "@workspace/api-client-react";
@@ -54,47 +50,68 @@ const productSchema = z.object({
 type ProductFormValues = z.infer<typeof productSchema>;
 
 export default function AdminPage() {
-  const { data: auth, isLoading: authLoading } = useGetAuthStatus();
-  
-  if (authLoading) {
+  const [authState, setAuthState] = useState<{ checked: boolean; authenticated: boolean; username: string }>({
+    checked: false,
+    authenticated: false,
+    username: "",
+  });
+
+  useEffect(() => {
+    fetch("/api/auth/me", { credentials: "include" })
+      .then((r) => r.json())
+      .then((data) => {
+        setAuthState({ checked: true, authenticated: !!data.authenticated, username: data.username || "" });
+      })
+      .catch(() => setAuthState({ checked: true, authenticated: false, username: "" }));
+  }, []);
+
+  if (!authState.checked) {
     return (
       <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
         <Skeleton className="w-12 h-12 rounded-full" />
       </div>
     );
   }
-  
-  if (!auth?.authenticated) {
-    return <AdminLogin />;
+
+  if (!authState.authenticated) {
+    return <AdminLogin onLogin={(username) => setAuthState({ checked: true, authenticated: true, username })} />;
   }
-  
-  return <AdminDashboard username={auth.username || "Admin"} />;
+
+  return <AdminDashboard username={authState.username || "Admin"} onLogout={() => setAuthState({ checked: true, authenticated: false, username: "" })} />;
 }
 
-function AdminLogin() {
+function AdminLogin({ onLogin }: { onLogin: (username: string) => void }) {
   const { toast } = useToast();
-  const queryClient = useQueryClient();
-  const loginMutation = useLogin();
-  
+  const [isPending, setIsPending] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: { username: "", password: "" },
   });
-  
-  const onSubmit = (values: z.infer<typeof loginSchema>) => {
-    loginMutation.mutate({ data: values }, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: getGetAuthStatusQueryKey() });
-        toast({ title: "Welcome back", description: "Logged in successfully." });
-      },
-      onError: (err) => {
-        toast({ 
-          title: "Login failed", 
-          description: "Invalid credentials", 
-          variant: "destructive" 
-        });
+
+  const onSubmit = async (values: z.infer<typeof loginSchema>) => {
+    setIsPending(true);
+    setErrorMsg("");
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+      if (!res.ok) {
+        setErrorMsg("Nieprawidłowy login lub hasło");
+        return;
       }
-    });
+      const data = await res.json();
+      toast({ title: "Zalogowano", description: "Witaj w panelu admina." });
+      onLogin(data.username || "Admin");
+    } catch {
+      setErrorMsg("Błąd połączenia z serwerem");
+    } finally {
+      setIsPending(false);
+    }
   };
   
   return (
@@ -141,12 +158,15 @@ function AdminLogin() {
               )}
             />
             
+            {errorMsg && (
+              <p className="text-[#dc2626] text-sm text-center">{errorMsg}</p>
+            )}
             <Button 
               type="submit" 
               className="w-full bg-[#dc2626] hover:bg-[#b91c1c] text-white font-bold"
-              disabled={loginMutation.isPending}
+              disabled={isPending}
             >
-              {loginMutation.isPending ? "Authenticating..." : "Login to Dashboard"}
+              {isPending ? "Logowanie..." : "Login to Dashboard"}
             </Button>
           </form>
         </Form>
@@ -155,20 +175,17 @@ function AdminLogin() {
   );
 }
 
-function AdminDashboard({ username }: { username: string }) {
-  const queryClient = useQueryClient();
+function AdminDashboard({ username, onLogout }: { username: string; onLogout: () => void }) {
   const { toast } = useToast();
-  const logoutMutation = useLogout();
   
   const { data: products = [], isLoading: productsLoading } = useAdminGetProducts();
   
-  const handleLogout = () => {
-    logoutMutation.mutate(undefined, {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: getGetAuthStatusQueryKey() });
-        toast({ title: "Logged out", description: "You have been logged out." });
-      }
-    });
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+    } catch {}
+    toast({ title: "Wylogowano", description: "Do zobaczenia!" });
+    onLogout();
   };
 
   return (
@@ -188,7 +205,7 @@ function AdminDashboard({ username }: { username: string }) {
           </div>
           <div className="flex items-center gap-4">
             <span className="text-white/50 text-sm">Logged in as <span className="text-white">{username}</span></span>
-            <Button variant="outline" size="sm" onClick={handleLogout} disabled={logoutMutation.isPending} className="border-white/10 hover:bg-white/5">
+            <Button variant="outline" size="sm" onClick={handleLogout} className="border-white/10 hover:bg-white/5">
               <LogOut className="w-4 h-4 mr-2" />
               Logout
             </Button>
