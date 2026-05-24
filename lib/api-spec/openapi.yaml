@@ -24,6 +24,128 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /products:
+    get:
+      operationId: getProducts
+      tags: [products]
+      summary: List all active products
+      description: Returns a list of all products that are currently active.
+      responses:
+        "200":
+          description: A list of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+  /admin/products:
+    get:
+      operationId: adminGetProducts
+      tags: [admin]
+      summary: List all products (admin)
+      description: Returns a list of all products including inactive ones.
+      responses:
+        "200":
+          description: A list of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+    post:
+      operationId: adminCreateProduct
+      tags: [admin]
+      summary: Create a new product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductInput"
+      responses:
+        "201":
+          description: Product created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+  /admin/products/{id}:
+    patch:
+      operationId: adminUpdateProduct
+      tags: [admin]
+      summary: Update a product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductUpdate"
+      responses:
+        "200":
+          description: Product updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+    delete:
+      operationId: adminDeleteProduct
+      tags: [admin]
+      summary: Delete a product
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Product deleted
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminLoginInput"
+      responses:
+        "200":
+          description: Logged in successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthStatus"
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout
+      responses:
+        "204":
+          description: Logged out successfully
+  /auth/me:
+    get:
+      operationId: getAuthStatus
+      tags: [auth]
+      summary: Get current auth status
+      responses:
+        "200":
+          description: Current auth status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthStatus"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +155,120 @@ components:
           type: string
       required:
         - status
+    Product:
+      type: object
+      required:
+        - id
+        - name
+        - description
+        - price
+        - badge
+        - rating
+        - reviewCount
+        - category
+        - imageUrl
+        - active
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: string
+        badge:
+          type: ["string", "null"]
+        rating:
+          type: number
+        reviewCount:
+          type: integer
+        category:
+          type: string
+          enum: [trending, gadgets, gear]
+        imageUrl:
+          type: string
+        active:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    ProductInput:
+      type: object
+      required:
+        - name
+        - description
+        - price
+        - rating
+        - reviewCount
+        - category
+        - imageUrl
+        - active
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: string
+        badge:
+          type: ["string", "null"]
+        rating:
+          type: number
+        reviewCount:
+          type: integer
+        category:
+          type: string
+          enum: [trending, gadgets, gear]
+        imageUrl:
+          type: string
+        active:
+          type: boolean
+    ProductUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: string
+        badge:
+          type: ["string", "null"]
+        rating:
+          type: number
+        reviewCount:
+          type: integer
+        category:
+          type: string
+          enum: [trending, gadgets, gear]
+        imageUrl:
+          type: string
+        active:
+          type: boolean
+    AdminLoginInput:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    AuthStatus:
+      type: object
+      required:
+        - authenticated
+        - username
+      properties:
+        authenticated:
+          type: boolean
+        username:
+          type: ["string", "null"]
 

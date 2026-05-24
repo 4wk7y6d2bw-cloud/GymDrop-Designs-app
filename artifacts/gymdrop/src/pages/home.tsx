@@ -3,42 +3,167 @@ import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { ProductCard } from "@/components/product-card";
 import { ArrowRight } from "lucide-react";
+import { useGetProducts } from "@workspace/api-client-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Home() {
-  const trendingGear = [
+  const { data: apiProducts, isLoading } = useGetProducts();
 
+  const fallbackTrendingGear = [
     {
       name: "Magnetic Gym Bottle",
       price: "$39.99",
       badge: "Viral",
-      rating: "4.9",
-      reviews: "5.1k",
-      image: "/bottle.png",
+      rating: 4.9,
+      reviewCount: 5100,
+      imageUrl: "/bottle.png",
       description: "The magnetic bottle every GymTok creator uses",
-      category: "ACCESSORIES"
+      category: "trending"
     },
+    { name: "Lifting Belt Pro X", price: "$89.99", badge: "Best Seller", rating: 4.9, reviewCount: 2400, imageUrl: "/lifting-belt.png", description: "The belt serious powerlifters swear by", category: "trending" },
+    { name: "Adjustable Dumbbells 50lb", price: "$249.99", badge: "Hot", rating: 4.8, reviewCount: 1800, imageUrl: "/dumbbells.png", description: "Space-saving. Heavy-duty. Worth every cent.", category: "trending" },
+    { name: "Resistance Band Kit", price: "$34.99", badge: "Top Rated", rating: 4.7, reviewCount: 3100, imageUrl: "/jump-rope.png", description: "Versatile training in one kit", category: "trending" },
+    { name: "Weight Lifting Straps", price: "$19.99", badge: "#1 Pick", rating: 4.9, reviewCount: 4200, imageUrl: "/lifting-belt.png", description: "Never lose grip on a heavy set again", category: "trending" },
+    { name: "Pull-Up Bar Steel", price: "$64.99", badge: "Popular", rating: 4.6, reviewCount: 1200, imageUrl: "/dumbbells.png", description: "No-install bar that holds serious weight", category: "trending" },
+    { name: "Pre-Workout Alpha", price: "$44.99", badge: "Trending", rating: 4.8, reviewCount: 2700, imageUrl: "/bottle.png", description: "The pre-workout going viral on gym TikTok", category: "trending" },
+  ];
+
+  const fallbackGymGadgets = [
+    { name: "Smart Jump Rope", price: "$49.99", badge: "Tech Pick", rating: 4.7, reviewCount: 890, imageUrl: "/jump-rope.png", description: "Counts reps. Tracks calories. Levels up cardio.", category: "gadgets" },
+    { name: "Muscle Stim Device", price: "$129.99", badge: "Editor's Choice", rating: 4.8, reviewCount: 650, imageUrl: "/jump-rope.png", description: "Recovery tech used by pro athletes", category: "gadgets" },
+    { name: "Resistance Trainer", price: "$79.99", badge: "Upgrade", rating: 4.6, reviewCount: 1100, imageUrl: "/jump-rope.png", description: "Cable machine vibes, apartment budget", category: "gadgets" },
+    { name: "Grip Strengthener Pro", price: "$24.99", badge: "Essential", rating: 4.9, reviewCount: 3300, imageUrl: "/jump-rope.png", description: "The underrated tool every lifter needs", category: "gadgets" },
+  ];
+
+  const fallbackFitnessGear = [
+    { name: "Compression Shorts", price: "$39.99", badge: "Comfort", rating: 4.7, reviewCount: 1500, imageUrl: "/lifting-belt.png", description: "Feels like a second skin. Lasts forever.", category: "gear" },
+    { name: "Knee Sleeves (Pair)", price: "$54.99", badge: "Protection", rating: 4.8, reviewCount: 2000, imageUrl: "/lifting-belt.png", description: "Squat deeper. Protect your joints.", category: "gear" },
+    { name: "Gym Gloves Pro", price: "$29.99", badge: "Grip", rating: 4.6, reviewCount: 2200, imageUrl: "/lifting-belt.png", description: "No calluses. Maximum grip on every pull.", category: "gear" },
+    { name: "Foam Roller XL", price: "$44.99", badge: "Recovery", rating: 4.9, reviewCount: 3400, imageUrl: "/lifting-belt.png", description: "The recovery tool you'll use every single day", category: "gear" },
+  ];
+
+  const products = apiProducts && apiProducts.length > 0 ? apiProducts : [];
+  
+  const trendingGear = products.length > 0 
+    ? products.filter(p => p.category === 'trending')
+    : fallbackTrendingGear;
     
-    { name: "Lifting Belt Pro X", price: "$89.99", badge: "Best Seller", rating: "4.9", reviews: "2.4k", image: "/lifting-belt.png", description: "The belt serious powerlifters swear by", category: "LIFTING GEAR" },
-    { name: "Adjustable Dumbbells 50lb", price: "$249.99", badge: "Hot", rating: "4.8", reviews: "1.8k", image: "/dumbbells.png", description: "Space-saving. Heavy-duty. Worth every cent.", category: "WEIGHTS" },
-    { name: "Resistance Band Kit", price: "$34.99", badge: "Top Rated", rating: "4.7", reviews: "3.1k", description: "Versatile training in one kit", category: "ACCESSORIES" },
-    { name: "Weight Lifting Straps", price: "$19.99", badge: "#1 Pick", rating: "4.9", reviews: "4.2k", description: "Never lose grip on a heavy set again", category: "LIFTING GEAR" },
-    { name: "Pull-Up Bar Steel", price: "$64.99", badge: "Popular", rating: "4.6", reviews: "1.2k", description: "No-install bar that holds serious weight", category: "HOME GYM" },
-    { name: "Pre-Workout Alpha", price: "$44.99", badge: "Trending", rating: "4.8", reviews: "2.7k", description: "The pre-workout going viral on gym TikTok", category: "SUPPLEMENTS" },
-  ];
+  const gymGadgets = products.length > 0
+    ? products.filter(p => p.category === 'gadgets')
+    : fallbackGymGadgets;
+    
+  const fitnessGear = products.length > 0
+    ? products.filter(p => p.category === 'gear')
+    : fallbackFitnessGear;
 
-  const gymGadgets = [
-    { name: "Smart Jump Rope", price: "$49.99", badge: "Tech Pick", rating: "4.7", reviews: "890", image: "/jump-rope.png", description: "Counts reps. Tracks calories. Levels up cardio.", category: "CARDIO TECH" },
-    { name: "Muscle Stim Device", price: "$129.99", badge: "Editor's Choice", rating: "4.8", reviews: "650", description: "Recovery tech used by pro athletes", category: "RECOVERY TECH" },
-    { name: "Resistance Trainer", price: "$79.99", badge: "Upgrade", rating: "4.6", reviews: "1.1k", description: "Cable machine vibes, apartment budget", category: "SMART GYM" },
-    { name: "Grip Strengthener Pro", price: "$24.99", badge: "Essential", rating: "4.9", reviews: "3.3k", description: "The underrated tool every lifter needs", category: "ACCESSORIES" },
-  ];
+  const renderProductList = (productList: any[], type: 'grid' | 'gadgets' | 'gear-grid') => {
+    if (isLoading) {
+      if (type === 'grid') {
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="space-y-4">
+                <Skeleton className="h-[400px] w-full bg-white/5" />
+                <Skeleton className="h-4 w-2/3 bg-white/5" />
+                <Skeleton className="h-4 w-1/2 bg-white/5" />
+              </div>
+            ))}
+          </div>
+        );
+      }
+      if (type === 'gadgets') {
+        return (
+          <div className="flex flex-col lg:flex-row gap-6">
+            <div className="w-full lg:w-1/2">
+              <Skeleton className="h-[600px] w-full bg-white/5" />
+            </div>
+            <div className="w-full lg:w-1/2 flex flex-col gap-6">
+              {[...Array(3)].map((_, i) => (
+                <Skeleton key={i} className="h-[180px] w-full bg-white/5" />
+              ))}
+            </div>
+          </div>
+        );
+      }
+      if (type === 'gear-grid') {
+        return (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="space-y-4">
+                <Skeleton className="h-[300px] w-full bg-white/5" />
+                <Skeleton className="h-4 w-2/3 bg-white/5" />
+                <Skeleton className="h-4 w-1/2 bg-white/5" />
+              </div>
+            ))}
+          </div>
+        );
+      }
+    }
 
-  const fitnessGear = [
-    { name: "Compression Shorts", price: "$39.99", badge: "Comfort", rating: "4.7", reviews: "1.5k", description: "Feels like a second skin. Lasts forever.", category: "APPAREL" },
-    { name: "Knee Sleeves (Pair)", price: "$54.99", badge: "Protection", rating: "4.8", reviews: "2.0k", description: "Squat deeper. Protect your joints.", category: "SUPPORT" },
-    { name: "Gym Gloves Pro", price: "$29.99", badge: "Grip", rating: "4.6", reviews: "2.2k", description: "No calluses. Maximum grip on every pull.", category: "ACCESSORIES" },
-    { name: "Foam Roller XL", price: "$44.99", badge: "Recovery", rating: "4.9", reviews: "3.4k", description: "The recovery tool you'll use every single day", category: "RECOVERY" },
-  ];
+    if (type === 'grid') {
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {productList.map((product, i) => (
+            <ProductCard 
+              key={product.id || product.name} 
+              {...product} 
+              image={product.imageUrl}
+              reviews={product.reviewCount > 1000 ? `${(product.reviewCount / 1000).toFixed(1)}k` : product.reviewCount.toString()}
+              rank={i + 1} 
+              delay={i * 0.1} 
+            />
+          ))}
+        </div>
+      );
+    }
+
+    if (type === 'gadgets') {
+      return (
+        <div className="flex flex-col lg:flex-row gap-6">
+          <div className="w-full lg:w-1/2">
+            {productList[0] && (
+              <ProductCard 
+                {...productList[0]} 
+                image={productList[0].imageUrl}
+                reviews={productList[0].reviewCount > 1000 ? `${(productList[0].reviewCount / 1000).toFixed(1)}k` : productList[0].reviewCount.toString()}
+                rank={1} 
+              />
+            )}
+          </div>
+          <div className="w-full lg:w-1/2 flex flex-col gap-6">
+            {productList.slice(1).map((product, i) => (
+              <ProductCard 
+                key={product.id || product.name} 
+                {...product} 
+                image={product.imageUrl}
+                reviews={product.reviewCount > 1000 ? `${(product.reviewCount / 1000).toFixed(1)}k` : product.reviewCount.toString()}
+                rank={i + 2} 
+                layout="horizontal" 
+                delay={i * 0.1 + 0.2} 
+              />
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    if (type === 'gear-grid') {
+      return (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {productList.map((product, i) => (
+            <ProductCard 
+              key={product.id || product.name} 
+              {...product} 
+              image={product.imageUrl}
+              reviews={product.reviewCount > 1000 ? `${(product.reviewCount / 1000).toFixed(1)}k` : product.reviewCount.toString()}
+              delay={i * 0.1} 
+            />
+          ))}
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white selection:bg-[#dc2626] selection:text-white font-sans">
@@ -146,11 +271,7 @@ export default function Home() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {trendingGear.map((product, i) => (
-              <ProductCard key={product.name} {...product} rank={i + 1} delay={i * 0.1} />
-            ))}
-          </div>
+          {renderProductList(trendingGear, 'grid')}
         </div>
       </section>
 
@@ -172,16 +293,7 @@ export default function Home() {
             </p>
           </motion.div>
 
-          <div className="flex flex-col lg:flex-row gap-6">
-            <div className="w-full lg:w-1/2">
-              <ProductCard {...gymGadgets[0]} rank={1} />
-            </div>
-            <div className="w-full lg:w-1/2 flex flex-col gap-6">
-              {gymGadgets.slice(1).map((product, i) => (
-                <ProductCard key={product.name} {...product} rank={i + 2} layout="horizontal" delay={i * 0.1 + 0.2} />
-              ))}
-            </div>
-          </div>
+          {renderProductList(gymGadgets, 'gadgets')}
         </div>
       </section>
 
@@ -203,11 +315,7 @@ export default function Home() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {fitnessGear.map((product, i) => (
-              <ProductCard key={product.name} {...product} delay={i * 0.1} />
-            ))}
-          </div>
+          {renderProductList(fitnessGear, 'gear-grid')}
         </div>
       </section>
 

@@ -16,11 +16,11 @@ export function Footer() {
         </div>
         
         <div className="flex gap-6 font-display uppercase tracking-[0.1em] text-xs text-white/50">
-          <a href="#finds" className="hover:text-white transition-colors">Finds</a>
-          <a href="#gadgets" className="hover:text-white transition-colors">Gadgets</a>
-          <a href="#gear" className="hover:text-white transition-colors">Gear</a>
-          <a href="#rankings" className="hover:text-white transition-colors">Rankings</a>
-          <a href="#" className="hover:text-white transition-colors">About</a>
+          <a href="/#finds" className="hover:text-white transition-colors">Finds</a>
+          <a href="/#gadgets" className="hover:text-white transition-colors">Gadgets</a>
+          <a href="/#gear" className="hover:text-white transition-colors">Gear</a>
+          <a href="/#rankings" className="hover:text-white transition-colors">Rankings</a>
+          <Link href="/admin" className="hover:text-white transition-colors">Admin</Link>
         </div>
 
         <div className="text-xs text-white/30 font-sans">
